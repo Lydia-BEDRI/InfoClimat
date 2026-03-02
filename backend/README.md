@@ -1,6 +1,6 @@
 # Backend - API Meteo
 
-API REST Django/DRF pour les donnees meteorologiques InfoClimat.
+API REST Django/DRF pour les donnees meteorologiques InfoClimat - Version 2.0
 
 ## Prerequis
 
@@ -43,7 +43,7 @@ uv run python manage.py populate_weather_data
 uv run python manage.py runserver
 ```
 
-L'API est disponible sur http://localhost:8000
+L'API est disponible sur <http://localhost:8000>
 
 ## Commandes de gestion
 
@@ -248,7 +248,7 @@ SELECT * FROM timescaledb_information.chunks;
 
 ## Notebooks
 
-###ITN
+### ITN
 Un notebook est disponible pour visualiser les données générées par le service national-indicator (fake datasource + agrégation).
 
 1️⃣ Installer les dépendances notebook
