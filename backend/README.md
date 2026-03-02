@@ -1,6 +1,6 @@
 # Backend - API Meteo
 
-API REST Django/DRF pour les donnees meteorologiques InfoClimat.
+API REST Django/DRF pour les donnees meteorologiques InfoClimat - Version 1.0
 
 ## Prerequis
 
