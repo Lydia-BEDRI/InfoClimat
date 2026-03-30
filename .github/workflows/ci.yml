@@ -77,7 +77,7 @@ jobs:
           DB_NAME: test_db
           DB_USER: test_user
           DB_PASSWORD: test_pass
-        run: pytest -q
+        run: uv run pytest -q
 
       - name: Run backend linter
         working-directory: backend
