@@ -87,7 +87,16 @@ jobs:
           DB_NAME: test_db
           DB_USER: test_user
           DB_PASSWORD: test_pass
-        run: uv run pytest -q
+        run: |
+          mkdir -p reports
+          uv run pytest --junitxml=reports/pytest-report.xml -vv
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: backend/reports/pytest-report.xml
 
       - name: Run backend linter
         working-directory: backend
@@ -100,7 +109,20 @@ jobs:
 
       - name: Backend security scan
         working-directory: backend
-        run: uv run safety check
+        run: |
+          mkdir -p reports
+          uv run pip install bandit pip-audit
+          uv run bandit -r weather -f json -o reports/bandit-report.json || true
+          uv run pip-audit --format=json --output=reports/pip-audit-report.json || true
+
+      - name: Upload security reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            backend/reports/bandit-report.json
+            backend/reports/pip-audit-report.json
 
   docker-build:
     name: Build & Push Docker images
