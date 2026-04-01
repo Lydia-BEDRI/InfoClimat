@@ -167,17 +167,77 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.69.3
           trivy --version
 
-      - name: Scan backend image with Trivy (JSON + VEX)
+      - name: Scan backend image with Trivy (JSON)
         run: |
           mkdir -p backend/reports
           trivy image -f json -o backend/reports/trivy-backend.json ghcr.io/lydia-bedri/infoclimat/infoclimat-backend:latest
-          trivy image -f vex -o backend/reports/trivy-backend.vex ghcr.io/lydia-bedri/infoclimat/infoclimat-backend:latest
 
-      - name: Scan frontend image with Trivy (JSON + VEX)
+      - name: Scan frontend image with Trivy (JSON)
         run: |
           mkdir -p frontend/reports
           trivy image -f json -o frontend/reports/trivy-frontend.json ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend:latest
-          trivy image -f vex -o frontend/reports/trivy-frontend.vex ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend:latest
+
+      - name: Generate OpenVEX reports from Trivy JSON
+        run: |
+          python3 - <<'PY'
+          import datetime
+          import json
+          import uuid
+          from pathlib import Path
+
+          def build_openvex(json_path: str, vex_path: str, fallback_product: str) -> None:
+            report = json.loads(Path(json_path).read_text())
+            seen = set()
+            statements = []
+
+            for result in report.get("Results", []):
+              for vuln in (result.get("Vulnerabilities") or []):
+                vuln_id = vuln.get("VulnerabilityID")
+                purl = (vuln.get("PkgIdentifier") or {}).get("PURL")
+                if not vuln_id:
+                  continue
+
+                product_id = purl or fallback_product
+                key = (vuln_id, product_id)
+                if key in seen:
+                  continue
+                seen.add(key)
+
+                statements.append(
+                  {
+                    "vulnerability": {"name": vuln_id},
+                    "products": [{"@id": product_id}],
+                    "status": "affected",
+                    "justification": "component_found",
+                  }
+                )
+
+            openvex = {
+              "@context": "https://openvex.dev/ns/v0.2.0",
+              "@id": f"urn:uuid:{uuid.uuid4()}",
+              "author": "InfoClimat CI (Trivy)",
+              "timestamp": datetime.datetime.now(datetime.timezone.utc)
+              .replace(microsecond=0)
+              .isoformat()
+              .replace("+00:00", "Z"),
+              "version": 1,
+              "statements": statements,
+            }
+
+            Path(vex_path).write_text(json.dumps(openvex, indent=2) + "\n")
+
+          build_openvex(
+            "backend/reports/trivy-backend.json",
+            "backend/reports/trivy-backend.vex",
+            "pkg:oci/ghcr.io/lydia-bedri/infoclimat/infoclimat-backend@latest",
+          )
+
+          build_openvex(
+            "frontend/reports/trivy-frontend.json",
+            "frontend/reports/trivy-frontend.vex",
+            "pkg:oci/ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend@latest",
+          )
+          PY
 
       - name: Upload Trivy reports
         if: always()
