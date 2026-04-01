@@ -42,4 +42,11 @@ jobs:
         path: ~/.cache/pre-commit
         key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
 
+    - name: Fix and validate Ruff issues (backend)
+      run: |
+        cd backend
+        uv run ruff check . --fix
+        uv run ruff format .
+        uv run ruff check .
+
     - uses: pre-commit/action@v3.0.0
