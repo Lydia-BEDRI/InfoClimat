@@ -35,6 +35,13 @@ jobs:
         continue-on-error: true
         run: npm audit --audit-level=high || true
 
+      - name: Upload frontend test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-test-report
+          path: frontend/test-report.xml
+
   backend:
     name: Backend
     runs-on: ubuntu-latest
@@ -154,3 +161,29 @@ jobs:
       - name: Push frontend image
         if: github.ref == 'refs/heads/main'
         run: docker push ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend:latest
+
+      - name: Scan backend image with Trivy (JSON + VEX)
+        run: |
+          sudo apt-get install -y wget
+          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.43.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.43.1_Linux-64bit.deb
+          mkdir -p backend/reports
+          trivy image -f json -o backend/reports/trivy-backend.json ghcr.io/lydia-bedri/infoclimat/infoclimat-backend:latest
+          trivy image -f vex -o backend/reports/trivy-backend.vex ghcr.io/lydia-bedri/infoclimat/infoclimat-backend:latest
+
+      - name: Scan frontend image with Trivy (JSON + VEX)
+        run: |
+          mkdir -p frontend/reports
+          trivy image -f json -o frontend/reports/trivy-frontend.json ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend:latest
+          trivy image -f vex -o frontend/reports/trivy-frontend.vex ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend:latest
+
+      - name: Upload Trivy reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-reports
+          path: |
+            backend/reports/trivy-backend.json
+            backend/reports/trivy-backend.vex
+            frontend/reports/trivy-frontend.json
+            frontend/reports/trivy-frontend.vex
