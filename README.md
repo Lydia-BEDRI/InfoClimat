@@ -6,7 +6,7 @@ Projet Data For Good - Saison 14
 
 ## Structure du projet
 
-```
+```text
 ├── backend/    # API et traitement des données (Python)
 ├── frontend/   # Interface utilisateur
 ```
@@ -17,6 +17,83 @@ Consultez les README de chaque sous-projet :
 
 - [Backend](backend/README.md)
 - [Frontend](frontend/README.md)
+
+## Observabilité (Prometheus + Grafana)
+
+La stack de développement inclut Prometheus et Grafana pour l'observabilité des métriques.
+
+### Lancer la stack
+
+```bash
+docker compose -f docker-compose.dev.yml up -d --build
+```
+
+### URLs utiles
+
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| Frontend | <http://localhost:8080> | - |
+| API backend (via Nginx) | <http://localhost:8080/api/v1/> | - |
+| Endpoint metrics (via Nginx) | <http://localhost:8080/metrics> | - |
+| Endpoint metrics (direct) | <http://localhost:8000/metrics> | - |
+| Prometheus UI | <http://localhost:9090> | - |
+| Grafana UI | <http://localhost:3000> | admin / admin |
+
+### Configuration Prometheus
+
+Le fichier de configuration est dans [monitoring/prometheus/prometheus.yml](monitoring/prometheus/prometheus.yml).
+
+**Cibles configurées :**
+
+- Service backend sur `backend:8000`
+- Endpoint `/metrics` exposé par Django (via `django-prometheus`)
+- Scraping toutes les 15 secondes par défaut
+
+**Vérifier les cibles :**
+
+1. Ouvrir <http://localhost:9090/targets>
+2. La cible `backend-django` doit être en état **UP**
+
+### Dashboard Grafana
+
+**Provisionnement automatique :**
+
+- Datasource Prometheus créée automatiquement au démarrage
+- Dashboard "InfoClimat Backend Observability" chargé depuis [monitoring/grafana/dashboards/backend-observability.json](monitoring/grafana/dashboards/backend-observability.json)
+
+**Accéder au dashboard :**
+
+1. Ouvrir <http://localhost:3000>
+2. Se connecter avec les identifiants `admin / admin`
+3. Accéder à **Dashboards** → **InfoClimat Backend Observability**
+
+### Générer des métriques
+
+Les métriques sont collectées automatiquement sur chaque requête API. Pour voir les graphes alimentés :
+
+```bash
+for i in {1..10}; do
+  curl -s http://localhost:8080/api/v1/stations/ > /dev/null
+done
+
+```
+
+### Format des métriques
+
+Le format Prometheus est accessible en texte brut :
+
+```bash
+curl http://localhost:8000/metrics
+# Ou via Nginx :
+curl http://localhost:8080/metrics
+```
+
+Exemple de métriques disponibles :
+
+- `django_http_requests_total_by_method` : nombre total de requêtes par méthode HTTP
+- `django_http_responses_total_by_status` : nombre de réponses par code HTTP
+- `django_http_request_duration_seconds_*` : durée des requêtes
+- Métriques Python standard : GC, threads, etc.
 
 ## Contribuer
 
