@@ -162,11 +162,12 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: docker push ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend:latest
 
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh
+
       - name: Scan backend image with Trivy (JSON + VEX)
         run: |
-          sudo apt-get install -y wget
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.43.1_Linux-64bit.deb
-          sudo dpkg -i trivy_0.43.1_Linux-64bit.deb
           mkdir -p backend/reports
           trivy image -f json -o backend/reports/trivy-backend.json ghcr.io/lydia-bedri/infoclimat/infoclimat-backend:latest
           trivy image -f vex -o backend/reports/trivy-backend.vex ghcr.io/lydia-bedri/infoclimat/infoclimat-backend:latest
