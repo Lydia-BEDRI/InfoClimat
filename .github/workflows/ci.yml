@@ -1,5 +1,8 @@
 name: CI Pipeline
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     branches: ["*"]
@@ -24,7 +27,7 @@ jobs:
 
       - name: Run frontend tests
         working-directory: frontend
-        run: npm run test:ci
+        run: npx vitest run --no-file-parallelism --reporter=default --reporter=junit --outputFile=test-report.xml
 
       - name: Run frontend lint
         working-directory: frontend
@@ -41,6 +44,7 @@ jobs:
         with:
           name: frontend-test-report
           path: frontend/test-report.xml
+          if-no-files-found: ignore
 
   backend:
     name: Backend
