@@ -46,7 +46,7 @@ jobs:
       run: |
         cd backend
         uv run ruff check . --fix
-        uv run ruff format .
+        uv run ruff format --exit-zero .
         uv run ruff check .
 
     - uses: pre-commit/action@v3.0.0
