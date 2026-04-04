@@ -18,6 +18,40 @@ Consultez les README de chaque sous-projet :
 - [Backend](backend/README.md)
 - [Frontend](frontend/README.md)
 
+## Docker Hardened Images
+
+Le projet utilise désormais les images Docker Hardened suivantes pour les builds de production :
+
+- Backend Python: `dhi.io/python:3.14-dev` pour le build, `dhi.io/python:3.14` pour le runtime
+- Frontend Node.js: `dhi.io/node:24-dev` pour le build, `dhi.io/node:24` pour le runtime
+
+Ces images servent de base aux Dockerfiles multi-stage du backend et du frontend afin de réduire la surface d'attaque et de rendre les conteneurs plus proches d'un usage production.
+
+### Prérequis
+
+Les images hardened sont tirées depuis le registry `dhi.io`. Avant de builder les images Docker du projet, il faut être authentifié :
+
+```bash
+docker login dhi.io
+```
+
+### Build production
+
+```bash
+docker login dhi.io
+docker compose -f docker-compose.prod.yml build backend frontend
+docker compose -f docker-compose.prod.yml up -d
+```
+
+Le backend expose ses métriques sur `http://localhost:8000/metrics` et via Nginx sur `http://localhost:8080/metrics`.
+
+### Build développement (sans DHI)
+
+```bash
+docker compose -f docker-compose.dev.yml build backend frontend
+docker compose -f docker-compose.dev.yml up -d
+```
+
 ## Observabilité (Prometheus + Grafana)
 
 La stack de développement inclut Prometheus et Grafana pour l'observabilité des métriques.
