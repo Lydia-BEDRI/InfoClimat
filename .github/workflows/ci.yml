@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: "24"
 
       - name: Install frontend dependencies
         working-directory: frontend
@@ -71,7 +71,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
@@ -99,15 +99,15 @@ jobs:
           DB_USER: test_user
           DB_PASSWORD: test_pass
         run: |
-          mkdir -p reports
-          uv run pytest --junitxml=reports/pytest-report.xml -vv
+          mkdir -p ../reports/backend
+          uv run pytest --junitxml=../reports/backend/pytest-report.xml -vv
 
-      - name: Upload test report
+      - name: Upload backend test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-report
-          path: backend/reports/pytest-report.xml
+          name: backend-tests
+          path: reports/backend/pytest-report.xml
 
       - name: Run backend linter
         working-directory: backend
@@ -121,19 +121,17 @@ jobs:
       - name: Backend security scan
         working-directory: backend
         run: |
-          mkdir -p reports
+          mkdir -p ../reports/security
           uv run pip install bandit pip-audit
-          uv run bandit -r weather -f json -o reports/bandit-report.json || true
-          uv run pip-audit --format=json --output=reports/pip-audit-report.json || true
+          uv run bandit -r weather -f json -o ../reports/security/bandit-report.json || true
+          uv run pip-audit --format=json --output=../reports/security/pip-audit-report.json || true
 
-      - name: Upload security reports
+      - name: Upload security scan reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: security-reports
-          path: |
-            backend/reports/bandit-report.json
-            backend/reports/pip-audit-report.json
+          name: security-scans
+          path: reports/security/
 
   docker-build:
     name: Build & Push Docker images
@@ -173,13 +171,13 @@ jobs:
 
       - name: Scan backend image with Trivy (JSON)
         run: |
-          mkdir -p backend/reports
-          trivy image -f json -o backend/reports/trivy-backend.json ghcr.io/lydia-bedri/infoclimat/infoclimat-backend:latest
+          mkdir -p reports/trivy
+          trivy image -f json -o reports/trivy/trivy-backend.json ghcr.io/lydia-bedri/infoclimat/infoclimat-backend:latest
 
       - name: Scan frontend image with Trivy (JSON)
         run: |
-          mkdir -p frontend/reports
-          trivy image -f json -o frontend/reports/trivy-frontend.json ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend:latest
+          mkdir -p reports/trivy
+          trivy image -f json -o reports/trivy/trivy-frontend.json ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend:latest
 
       - name: Generate OpenVEX reports from Trivy JSON
         run: |
@@ -231,25 +229,21 @@ jobs:
             Path(vex_path).write_text(json.dumps(openvex, indent=2) + "\n")
 
           build_openvex(
-            "backend/reports/trivy-backend.json",
-            "backend/reports/trivy-backend.vex",
+            "reports/trivy/trivy-backend.json",
+            "reports/trivy/trivy-backend.vex",
             "pkg:oci/ghcr.io/lydia-bedri/infoclimat/infoclimat-backend@latest",
           )
 
           build_openvex(
-            "frontend/reports/trivy-frontend.json",
-            "frontend/reports/trivy-frontend.vex",
+            "reports/trivy/trivy-frontend.json",
+            "reports/trivy/trivy-frontend.vex",
             "pkg:oci/ghcr.io/lydia-bedri/infoclimat/infoclimat-frontend@latest",
           )
           PY
 
-      - name: Upload Trivy reports
+      - name: Upload Docker scan reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: trivy-reports
-          path: |
-            backend/reports/trivy-backend.json
-            backend/reports/trivy-backend.vex
-            frontend/reports/trivy-frontend.json
-            frontend/reports/trivy-frontend.vex
+          name: docker-scans
+          path: reports/trivy/
