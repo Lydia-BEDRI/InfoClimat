@@ -1,6 +1,8 @@
 # Valorisation Donnée Météo
 
 [![CI Pipeline](https://github.com/lydia-bedri/infoclimat/actions/workflows/ci.yml/badge.svg)](https://github.com/lydia-bedri/infoclimat/actions/workflows/ci.yml)
+[![Scorecard](https://api.scorecard.dev/projects/github.com/lydia-bedri/infoclimat/badge)](https://scorecard.dev/viewer/?uri=github.com/lydia-bedri/infoclimat)
+[![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/12672/badge)](https://bestpractices.coreinfrastructure.org/projects/12672)
 
 Projet Data For Good - Saison 14
 
@@ -64,14 +66,14 @@ docker compose -f docker-compose.dev.yml up -d --build
 
 ### URLs utiles
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| Frontend | <http://localhost:8080> | - |
-| API backend (via Nginx) | <http://localhost:8080/api/v1/> | - |
-| Endpoint metrics (via Nginx) | <http://localhost:8080/metrics> | - |
-| Endpoint metrics (direct) | <http://localhost:8000/metrics> | - |
-| Prometheus UI | <http://localhost:9090> | - |
-| Grafana UI | <http://localhost:3000> | admin / admin |
+| Service                      | URL                             | Credentials   |
+| ---------------------------- | ------------------------------- | ------------- |
+| Frontend                     | <http://localhost:8080>         | -             |
+| API backend (via Nginx)      | <http://localhost:8080/api/v1/> | -             |
+| Endpoint metrics (via Nginx) | <http://localhost:8080/metrics> | -             |
+| Endpoint metrics (direct)    | <http://localhost:8000/metrics> | -             |
+| Prometheus UI                | <http://localhost:9090>         | -             |
+| Grafana UI                   | <http://localhost:3000>         | admin / admin |
 
 ### Configuration Prometheus
 

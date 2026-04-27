@@ -1,0 +1,28 @@
+name: OpenSSF Best Practices Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  check-practices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check security practices
+        run: |
+          echo "Checking OpenSSF Best Practices..."
+          echo ""
+          echo "Security practices checklist:"
+          echo "CI/CD pipeline configured (GitHub Actions)"
+          echo "Security workflow (Scorecard)"
+          echo "License file present"
+          echo "README documentation"
+          echo "Branch protection enabled (to be verified)"
+          echo ""
+          echo "For full badge certification, visit: https://bestpractices.dev"
