@@ -7,6 +7,13 @@ Projet Data For Good - Saison 14
 
 > **Note :** Ce projet est un fork pédagogique. Scorecard n'est pas disponible sur les forks GitHub.
 
+## Documentation
+
+- **Français:** [README.md](README.md) (this file)
+- **English:** [docs/README_EN.md](docs/README_EN.md) - Complete English documentation
+- **API Docs:** [docs/API_ENDPOINTS.md](docs/API_ENDPOINTS.md) - REST API endpoints reference
+- **Doc Index:** [docs/INDEX.md](docs/INDEX.md) - Documentation index and guide
+
 ## Structure du projet
 
 ```text
