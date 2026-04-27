@@ -11,6 +11,7 @@ jobs:
   analysis:
     name: Scorecard analysis
     runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
     permissions:
       contents: read
       security-events: write
