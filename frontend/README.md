@@ -25,7 +25,9 @@ cd frontend
 npm run dev
 ```
 
-L'application est accessible sur `http://localhost:3000`
+L'application est accessible via Nginx sur `http://localhost:8080`
+
+NB: Grafana est accessible sur `http://localhost:3001` (admin/admin)
 
 ### Pre-commit
 
@@ -144,7 +146,6 @@ uv sync --extra dev
 # Copier la configuration
 cp .env.example .env
 ```
-
 
 ## Demarrer TimescaleDB
 

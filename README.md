@@ -81,7 +81,7 @@ docker compose -f docker-compose.dev.yml up -d --build
 | Endpoint metrics (via Nginx) | <http://localhost:8080/metrics> | -             |
 | Endpoint metrics (direct)    | <http://localhost:8000/metrics> | -             |
 | Prometheus UI                | <http://localhost:9090>         | -             |
-| Grafana UI                   | <http://localhost:3000>         | admin / admin |
+| Grafana UI                   | <http://localhost:3001>         | admin / admin |
 
 ### Configuration Prometheus
 
@@ -107,7 +107,7 @@ Le fichier de configuration est dans [monitoring/prometheus/prometheus.yml](moni
 
 **Accéder au dashboard :**
 
-1. Ouvrir <http://localhost:3000>
+1. Ouvrir <http://localhost:3001>
 2. Se connecter avec les identifiants `admin / admin`
 3. Accéder à **Dashboards** → **InfoClimat Backend Observability**
 

@@ -52,7 +52,7 @@ See [Backend](../backend/README.md) and [Frontend](../frontend/README.md) for de
 | API Base URL                | `http://localhost:8080/api/v1/`      | -             |
 | API Documentation (Swagger) | `http://localhost:8080/api/v1/docs/` | -             |
 | Prometheus Metrics          | `http://localhost:8080/metrics`      | -             |
-| Grafana Dashboard           | `http://localhost:3000`              | admin / admin |
+| Grafana Dashboard           | `http://localhost:3001`              | admin / admin |
 
 ## Key Features
 
