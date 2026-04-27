@@ -1,7 +1,7 @@
 # Valorisation Donnée Météo
 
 [![CI Pipeline](https://github.com/lydia-bedri/infoclimat/actions/workflows/ci.yml/badge.svg)](https://github.com/lydia-bedri/infoclimat/actions/workflows/ci.yml)
-[![Scorecard](https://api.scorecard.dev/projects/github.com/lydia-bedri/infoclimat/badge)](https://scorecard.dev/viewer/?uri=github.com/lydia-bedri/infoclimat)
+[![Scorecard](https://api.scorecard.dev/projects/github.com%2FLydia-BEDRI%2FInfoClimat/badge)](https://scorecard.dev/viewer/?uri=github.com/Lydia-BEDRI/InfoClimat)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/12672/badge)](https://bestpractices.coreinfrastructure.org/projects/12672)
 
 Projet Data For Good - Saison 14

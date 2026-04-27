@@ -12,6 +12,7 @@ jobs:
     name: Scorecard analysis
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       security-events: write
       id-token: write
 
@@ -23,6 +24,8 @@ jobs:
 
       - name: Run Scorecard
         uses: ossf/scorecard-action@v2.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           results_file: results.sarif
           results_format: sarif
